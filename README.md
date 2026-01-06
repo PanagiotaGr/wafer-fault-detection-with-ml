@@ -1,11 +1,11 @@
-# 🟢 Semiconductor Wafer Defect Classification
+#  Semiconductor Wafer Defect Classification
 
 This project explores how **machine learning** can be applied to classify defect patterns on semiconductor wafers using real wafer map image data.  
 The aim is to improve defect detection accuracy and reduce manual inspection in semiconductor manufacturing.  
 
 ---
 
-## 📑 Table of Contents
+##  Table of Contents
 - [Objective](#-objective)
 - [Dataset](#-dataset)
 - [Workflow](#-workflow)
@@ -17,7 +17,7 @@ The aim is to improve defect detection accuracy and reduce manual inspection in 
 
 ---
 
-## 📌 Objective
+## Objective
 Automatically recognize defect types in wafer maps using three supervised learning models:
 
 - Support Vector Machine (SVM)  
@@ -28,14 +28,14 @@ Each model is trained to classify different wafer defect types, enabling **early
 
 ---
 
-## 📊 Dataset
+## Dataset
 - **Source:** [WM-811K Dataset (Kaggle)](https://www.kaggle.com/qingyi/wm811k-wafer-map)  
 - **Provider:** Multimedia Information Retrieval Lab ([mirlab.org](http://mirlab.org))  
 - **Description:** Contains wafer map images with labeled defect categories.  
 
 ---
 
-## ⚙️ Workflow
+##  Workflow
 
 1. **Data Loading**  
    - Load wafer map images from `.npy` files.  
@@ -54,7 +54,7 @@ Each model is trained to classify different wafer defect types, enabling **early
 
 ---
 
-## 🧪 Technologies
+## Technologies
 
 - Python 3.x  
 - NumPy  
@@ -65,7 +65,7 @@ Each model is trained to classify different wafer defect types, enabling **early
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ├── wafer_defect_classification.ipynb # Main notebook (data prep, training, evaluation)
 
@@ -81,7 +81,7 @@ Each model is trained to classify different wafer defect types, enabling **early
 
 ---
 
-## 💻 Installation & Usage
+## Installation & Usage
 
 1. Clone this repository:
    ```bash
@@ -95,7 +95,7 @@ jupyter notebook
 
 Open wafer_defect_classification.ipynb to run the analysis.
 
-📈 Results
+Results
 Model	Accuracy	Notes
 | Model                  | Accuracy | Notes                      |
 | ---------------------- | -------- | -------------------------- |
@@ -107,7 +107,7 @@ Model	Accuracy	Notes
 
 
 
-📬 Acknowledgments
+ Acknowledgments
 
 Dataset provided by Multimedia Information Retrieval Lab.
 
@@ -115,7 +115,7 @@ Hosted on Kaggle as WM-811K.
 
 Inspired by research in semiconductor manufacturing defect detection.
 
-📄 License
+ License
 
 This project is licensed under the Apache 2.0 License 
 
