@@ -1,6 +1,4 @@
 
-
-````markdown
 # Semiconductor Wafer Defect Classification
 
 This project explores how **machine learning** and **deep learning** can be applied to classify defect patterns on semiconductor wafers using real wafer map image data.  
