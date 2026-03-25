@@ -260,5 +260,3 @@ This project is licensed under the Apache 2.0 License.
 
 ```
 
-Αν θέλεις, στο επόμενο μήνυμα μπορώ να σου δώσω και ένα έτοιμο `requirements.txt` για αυτό το repo.
-```
