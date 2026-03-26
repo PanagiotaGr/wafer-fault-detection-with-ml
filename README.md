@@ -1,8 +1,10 @@
 
-# Semiconductor Wafer Defect Classification
+#  Semiconductor Wafer Defect Classification
 
 This project explores how **machine learning** and **deep learning** can be applied to classify defect patterns on semiconductor wafers using real wafer map image data.  
 The aim is to improve defect detection accuracy and reduce manual inspection in semiconductor manufacturing.
+
+Additionally, this project includes a **research-oriented study on few-shot learning under extreme data scarcity and class imbalance**.
 
 ---
 
@@ -15,6 +17,7 @@ The aim is to improve defect detection accuracy and reduce manual inspection in 
 - [Installation & Usage](#installation--usage)
 - [Results](#results)
 - [Few-Shot Learning Experiments](#few-shot-learning-experiments)
+- [Key Findings](#key-findings)
 - [Acknowledgments](#acknowledgments)
 - [License](#license)
 
@@ -31,7 +34,10 @@ The project includes:
 - Random Forest Classifier (RF)
 - Convolutional Neural Networks (CNNs)
 
-The goal is to study wafer defect classification under both **standard** and **limited-data** conditions.
+The goal is to study wafer defect classification under both:
+
+- **standard supervised learning**
+- **few-shot (limited-data) scenarios**
 
 ---
 
@@ -41,7 +47,7 @@ The goal is to study wafer defect classification under both **standard** and **l
 - **Original availability:** Kaggle / MIR Lab  
 - **Description:** Contains wafer map images with labeled defect categories.
 
-The main defect classes used in this project are:
+Main defect classes used:
 
 - edge-ring
 - edge-loc
@@ -52,7 +58,7 @@ The main defect classes used in this project are:
 - donut
 - near-full
 
-> Note: The dataset is not included in the repository due to size restrictions.
+>  Dataset is not included due to size restrictions.
 
 ---
 
@@ -62,10 +68,10 @@ The main defect classes used in this project are:
    - Load wafer map data from `LSWMD.pkl`
 
 2. **Preprocessing**
-   - Remove null / non-defect categories
+   - Remove non-defect samples
    - Clean label formatting
-   - Resize wafer maps into uniform image inputs
-   - Normalize images
+   - Resize wafer maps (64×64)
+   - Normalize pixel values
 
 3. **Classical Machine Learning**
    - Logistic Regression
@@ -75,17 +81,18 @@ The main defect classes used in this project are:
 4. **Deep Learning**
    - CNN baseline
    - CNN with weighted loss
-   - CNN with Focal Loss and data augmentation
+   - CNN with focal loss
+   - CNN with focal loss + augmentation
 
-5. **Few-Shot Learning Experiments**
-   - 5 samples per class
-   - 10 samples per class
-   - 20 samples per class
+5. **Few-Shot Experiments**
+   - k = 5 samples/class
+   - k = 10 samples/class
+   - k = 20 samples/class
 
 6. **Evaluation**
    - Accuracy
-   - Classification reports
    - Confusion matrices
+   - Class distribution analysis
    - Few-shot comparison plots
 
 ---
@@ -99,7 +106,6 @@ The main defect classes used in this project are:
 - Scikit-learn
 - OpenCV
 - PyTorch
-- Jupyter Notebook
 
 ---
 
@@ -114,7 +120,7 @@ The main defect classes used in this project are:
 ├── wafer_cnn_pipeline.py
 ├── wafer_cnn_focal_aug.py
 ├── wafer_fewshot_focal_experiment.py
-├── download_dataset.py
+├── wafer_full_comparison_experiment.py   #  main research experiment
 │
 ├── outputs/
 │   ├── figures/
@@ -124,139 +130,109 @@ The main defect classes used in this project are:
 └── README.md
 ````
 
-### Main Scripts
-
-* `wafer_pipeline.py`
-  Classical ML baseline pipeline
-
-* `wafer_cnn_pipeline.py`
-  CNN baseline for wafer defect classification
-
-* `wafer_cnn_focal_aug.py`
-  CNN with Focal Loss and augmentation for class imbalance handling
-
-* `wafer_fewshot_focal_experiment.py`
-  Few-shot deep learning experiments under limited labeled data
-
 ---
 
 ## Installation & Usage
 
-Clone this repository:
-
 ```bash
 git clone https://github.com/PanagiotaGr/wafer-fault-detection-with-ml.git
 cd wafer-fault-detection-with-ml
-```
 
-Create virtual environment:
-
-```bash
 python -m venv .venv
 source .venv/bin/activate
-```
 
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
-Run classical ML pipeline:
+Run pipelines:
 
 ```bash
 python wafer_pipeline.py
-```
-
-Run CNN baseline:
-
-```bash
 python wafer_cnn_pipeline.py
-```
-
-Run CNN with focal loss and augmentation:
-
-```bash
 python wafer_cnn_focal_aug.py
 ```
 
-Run few-shot experiments:
+Run research experiment:
 
 ```bash
-python wafer_fewshot_focal_experiment.py
+python wafer_full_comparison_experiment.py
 ```
 
 ---
 
 ## Results
 
-### Classical ML Results
+### Classical ML
 
-| Model                     | Accuracy | Notes                            |
-| ------------------------- | -------- | -------------------------------- |
-| Logistic Regression       | 62.7%    | Fast, but limited accuracy       |
-| Support Vector Machine    | 65.7%    | Better generalization            |
-| Random Forest             | 78.5%    | Best classical baseline          |
-| Random Forest (optimized) | 79.4%    | Best overall classical ML result |
-
-### Deep Learning Results
-
-The project also includes CNN-based models for wafer defect classification:
-
-* CNN baseline
-* CNN with Focal Loss
-* CNN with augmentation
-* Few-shot CNN experiments
-
-Saved outputs include:
-
-* class distribution plots
-* training curves
-* confusion matrices
-* few-shot comparison plots
+| Model                     | Accuracy |
+| ------------------------- | -------- |
+| Logistic Regression       | 62.7%    |
+| SVM                       | 65.7%    |
+| Random Forest             | 78.5%    |
+| Random Forest (optimized) | 79.4%    |
 
 ---
 
 ## Few-Shot Learning Experiments
 
-To simulate realistic industrial scenarios with limited labeled data, the project includes few-shot experiments using:
+| Samples per class | Baseline | Weighted | Focal | Focal + Aug |
+| ----------------- | -------- | -------- | ----- | ----------- |
+| 5                 | 0.20     | 0.13     | 0.07  | 0.20        |
+| 10                | 0.43     | 0.43     | 0.37  | 0.10        |
+| 20                | 0.52     | **0.57** | 0.18  | 0.47        |
 
-* **5 samples per class**
-* **10 samples per class**
-* **20 samples per class**
+---
 
-These experiments help evaluate:
+##  Key Findings
 
-* how performance changes when training data is scarce
-* which classes are more sensitive to limited data
-* whether Focal Loss and augmentation improve robustness
+* **Weighted loss improves performance under class imbalance**
+*  **Focal loss underperforms in extremely low-data regimes**
+* **Data augmentation can degrade performance when data is very limited**
+*  Increasing samples per class significantly improves accuracy
 
-Main output file:
+---
 
-```bash
+##  Scientific Insight
+
+This study shows that:
+
+> In few-shot learning scenarios, **simple methods (e.g., weighted loss)** can outperform more complex approaches like focal loss.
+
+---
+
+## Outputs
+
+Saved results include:
+
+* confusion matrices
+* training curves
+* class distributions
+* few-shot comparison plots
+
+Example files:
+
+```
+outputs/figures/fewshot_accuracy_comparison.png
 outputs/results/fewshot_summary.csv
 ```
-
-Example output figures:
-
-* `fewshot_accuracy_comparison.png`
-* `fewshot_5_confusion_matrix.png`
-* `fewshot_10_confusion_matrix.png`
-* `fewshot_20_confusion_matrix.png`
 
 ---
 
 ## Acknowledgments
 
-* Dataset provided by the semiconductor wafer defect research community
 * WM-811K / LSWMD dataset
-* Inspired by research in semiconductor manufacturing defect detection
+* Semiconductor defect detection research community
 
 ---
 
 ## License
 
-This project is licensed under the Apache 2.0 License.
+Apache 2.0 License
 
 ```
 
+---
+
+
+πες μου και πάμε επόμενο level 🔥
+```
