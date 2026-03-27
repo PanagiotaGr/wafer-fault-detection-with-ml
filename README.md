@@ -230,3 +230,15 @@ outputs/results/fewshot_summary.csv
 Apache 2.0 License
 
 
+## Citation
+
+If you find this work useful for your research, please cite it:
+
+```bibtex
+@software{Grosdouli_Wafer_Fault_Detection_2026,
+  author = {Grosdouli, Panagiota},
+  title = {Semiconductor Wafer Defect Classification: A Study on Classical ML and Few-Shot Deep Learning},
+  url = {[https://github.com/PanagiotaGr/wafer-fault-detection-with-ml](https://github.com/PanagiotaGr/wafer-fault-detection-with-ml)},
+  year = {2026}
+}
+
