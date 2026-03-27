@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this research or code, please cite it as follows."
+authors:
+  - family-names: "Grosdouli"
+    given-names: "Panagiota"
+title: "Semiconductor Wafer Defect Classification: A Study on Classical ML and Few-Shot Deep Learning"
+version: 1.0.0
+date-released: 2026-03-26
+url: "https://github.com/PanagiotaGr/wafer-fault-detection-with-ml"
