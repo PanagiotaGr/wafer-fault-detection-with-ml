@@ -1,0 +1,67 @@
+data:
+  path: "data/raw/LSWMD.pkl"
+  image_size: 64
+  test_size: 0.2
+  val_size: 0.15        # fraction of train set used for validation
+  seed: 42
+
+preprocessing:
+  invalid_labels: ["none", "[]", "", "nan"]
+  resize_interpolation: "nearest"   # nearest | linear | cubic
+
+training:
+  seed: 42
+  batch_size: 64
+  epochs: 20
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  early_stopping_patience: 5
+  device: "auto"                    # auto | cpu | cuda | mps
+
+classical_ml:
+  random_forest:
+    n_estimators: 200
+    max_depth: null
+    class_weight: "balanced_subsample"
+    n_jobs: -1
+  svm:
+    C: 1.0
+    kernel: "rbf"
+    class_weight: "balanced"
+  logistic_regression:
+    C: 1.0
+    max_iter: 1000
+    class_weight: "balanced"
+
+cnn:
+  architecture: "simple"            # simple | resnet_like
+  dropout: 0.3
+  channels: [16, 32, 64]
+
+losses:
+  focal:
+    gamma: 2.0
+    alpha: null                     # null = computed from class frequencies
+
+few_shot:
+  k_values: [5, 10, 20]
+  variants:
+    - name: "baseline"
+      loss: "cross_entropy"
+      augmentation: false
+    - name: "weighted"
+      loss: "weighted_cross_entropy"
+      augmentation: false
+    - name: "focal"
+      loss: "focal"
+      augmentation: false
+    - name: "focal_aug"
+      loss: "focal"
+      augmentation: true
+
+outputs:
+  base_dir: "outputs"
+  figures_dir: "outputs/figures"
+  results_dir: "outputs/results"
+  models_dir: "outputs/models"
+  save_best_model: true
