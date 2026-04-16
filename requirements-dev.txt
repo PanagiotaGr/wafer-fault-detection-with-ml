@@ -1,0 +1,13 @@
+# Everything in requirements.txt, plus developer tools
+-r requirements.txt
+
+# Linting & formatting
+ruff>=0.4
+black>=24.0
+
+# Type checking
+mypy>=1.8
+
+# Notebook support
+jupyterlab>=4.0
+ipykernel>=6.0
