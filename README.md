@@ -2,16 +2,16 @@
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square&logo=python)
-![PyTorch](https://img.shields.io/badge/PyTorch-orange?style=flat-square&logo=pytorch)
+![CI](https://img.shields.io/github/actions/workflow/status/PanagiotaGr/wafer-fault-detection-with-ml/ci.yml?label=CI&style=flat-square)
+![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue?style=flat-square&logo=python)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-orange?style=flat-square&logo=pytorch)
 ![License](https://img.shields.io/badge/License-Apache%202.0-green?style=flat-square)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-ML-teal?style=flat-square&logo=scikitlearn)
-![Dataset](https://img.shields.io/badge/Dataset-WM--811K-lightgray?style=flat-square)
+![Coverage](https://img.shields.io/badge/coverage-checked-brightgreen?style=flat-square)
 
 **Classical ML & deep learning for wafer map defect detection**  
 *With a research study on few-shot learning under extreme data scarcity and class imbalance*
 
-[Objective](#-objective) · [Dataset](#-dataset) · [Pipeline](#-pipeline) · [Results](#-results) · [Few-Shot Study](#-few-shot-learning-experiments) · [Install](#-installation--usage)
+[Objective](#-objective) · [Dataset](#-dataset) · [Pipeline](#-pipeline) · [Results](#-results) · [Few-Shot Study](#-few-shot-learning-experiments) · [Install](#-installation--usage) · [Contributing](#-contributing)
 
 </div>
 
@@ -19,32 +19,27 @@
 
 ## 🎯 Objective
 
-Automatically recognize defect types in semiconductor wafer maps using both classical and deep learning approaches. This project studies wafer defect classification under:
+Automatically recognise defect types in semiconductor wafer maps using both classical and deep learning approaches. The project studies classification under:
 
-- **Standard supervised learning** — full dataset, classical ML & CNN baselines
-- **Few-shot (limited-data) scenarios** — extreme data scarcity with only 5–20 samples per class
-
-Models explored:
+- **Standard supervised learning** — full dataset, classical ML & CNN variants
+- **Few-shot (limited-data) scenarios** — extreme scarcity with only 5–20 samples per class
 
 | Category | Models |
 |---|---|
 | Classical ML | Logistic Regression, SVM, Random Forest |
-| Deep Learning | CNN (baseline, weighted loss, focal loss, focal+augmentation) |
-| Research | Few-shot learning variants across k=5, 10, 20 samples/class |
+| Deep Learning | CNN (baseline, weighted loss, focal loss, focal + augmentation) |
+| Research | Few-shot variants across k = 5, 10, 20 samples per class |
 
 ---
 
 ## 📦 Dataset
 
 - **Source:** [WM-811K](https://www.kaggle.com/qingyi/wm811k-wafer-map) (Kaggle / MIR Lab)
-- **Format:** Wafer map images with labeled defect categories
-- **File:** `LSWMD.pkl`
+- **Format:** Wafer map images with labeled defect categories, stored as `LSWMD.pkl`
 
-> ⚠️ Dataset not included due to size. Run `python download_dataset.py` or fetch it from Kaggle.
+> ⚠️ Dataset not included. Run `python download_dataset.py` or place `LSWMD.pkl` in `data/raw/`.
 
-**Defect classes used:**
-
-`edge-ring` · `edge-loc` · `center` · `loc` · `scratch` · `random` · `donut` · `near-full`
+**Defect classes:** `edge-ring` · `edge-loc` · `center` · `loc` · `scratch` · `random` · `donut` · `near-full`
 
 ---
 
@@ -54,32 +49,33 @@ Models explored:
 LSWMD.pkl
     │
     ▼
-┌─────────────────┐
-│  Preprocessing  │  Remove non-defect samples · clean labels
-│                 │  Resize → 64×64 · normalize pixel values
-└────────┬────────┘
+┌───────────────────┐
+│   Preprocessing   │  remove invalid labels · resize 64×64 · normalise [0, 1]
+└────────┬──────────┘
          │
-    ┌────┴────┐
-    ▼         ▼
-┌───────┐ ┌──────────────────────────────────────┐
-│  ML   │ │           Deep Learning               │
-│  SVM  │ │  Baseline → Weighted → Focal → Focal  │
-│  LR   │ │                               + Aug   │
-│  RF   │ └──────────────┬───────────────────────┘
-└───┬───┘                │
-    │         ┌──────────▼──────────┐
-    │         │  Few-Shot Variants  │
-    │         │  k = 5 / 10 / 20   │
-    │         └──────────┬──────────┘
-    └──────────┬──────────┘
-               ▼
-        ┌─────────────────┐
-        │    Evaluation   │
-        │  accuracy       │
-        │  confusion mat  │
-        │  training curve │
-        └─────────────────┘
+    ┌────┴──────┐
+    ▼           ▼
+┌────────┐  ┌─────────────────────────────────────────────────┐
+│  ML    │  │                Deep Learning                     │
+│  LR    │  │  baseline → weighted → focal → focal + aug       │
+│  SVM   │  └───────────────────┬─────────────────────────────┘
+│  RF    │                      │
+└───┬────┘         ┌────────────▼────────────┐
+    │               │   Few-Shot Study         │
+    │               │   k = 5 / 10 / 20       │
+    │               └────────────┬────────────┘
+    └──────────────┬─────────────┘
+                   ▼
+           ┌───────────────┐
+           │   Evaluation  │
+           │  accuracy     │
+           │  F1 macro/wtd │
+           │  ROC-AUC      │
+           │  confusion ✦  │
+           └───────────────┘
 ```
+
+All hyperparameters live in `config.yaml` — no hardcoded values in the code.
 
 ---
 
@@ -87,23 +83,23 @@ LSWMD.pkl
 
 ### Classical ML
 
-| Model | Accuracy | Notes |
-|---|---|---|
-| Logistic Regression | 62.7% | Baseline linear model |
-| SVM | 65.7% | Kernel-based, best classical linear |
-| Random Forest | 78.5% | Strong non-linear baseline |
-| **Random Forest (optimized)** | **79.4%** | ✦ Best classical result |
+| Model | Accuracy | F1 (macro) | F1 (weighted) |
+|---|---|---|---|
+| Logistic Regression | 62.7% | — | — |
+| SVM | 65.7% | — | — |
+| Random Forest | 78.5% | — | — |
+| **Random Forest (optimised)** | **79.4%** | — | — |
+
+> F1 scores are computed automatically and saved to `outputs/results/` on each run.
 
 ### CNN Deep Learning
 
-| Model | Strategy | Notes |
+| Variant | Loss | Augmentation |
 |---|---|---|
-| CNN Baseline | Standard cross-entropy | Competitive start |
-| CNN Weighted | Weighted loss | Handles class imbalance |
-| CNN Focal | Focal loss | Targets hard examples |
-| CNN Focal + Aug | Focal loss + augmentation | Full augmented pipeline |
-
-> 📊 Full confusion matrices and training curves saved in `outputs/figures/`
+| baseline | Cross-entropy | ✗ |
+| weighted | Weighted CE | ✗ |
+| focal | Focal loss | ✗ |
+| focal_aug | Focal loss | ✓ |
 
 ---
 
@@ -121,10 +117,10 @@ Accuracy under extreme data scarcity (k samples per class):
 
 ## 💡 Key Findings
 
-- ✅ **Weighted loss consistently wins** under class imbalance — even in extreme few-shot scenarios
-- ❌ **Focal loss underperforms** at very low data regimes (k=5, k=10)
-- ❌ **Augmentation can hurt** when samples per class are too limited (k=10 drops to 0.10)
-- 📈 **More data matters most** — k: 5→20 yields the largest single accuracy improvement
+- ✅ **Weighted loss consistently wins** under class imbalance, even in extreme few-shot scenarios
+- ❌ **Focal loss underperforms** at very low data regimes (k = 5, k = 10)
+- ❌ **Augmentation can hurt** when samples per class are very limited (k = 10 drops to 0.10)
+- 📈 **More data matters most** — the largest accuracy gain comes from increasing k
 
 > **Scientific insight:** In few-shot scenarios, simple approaches (e.g. weighted loss) can outperform architecturally complex solutions. Complexity alone does not equal performance.
 
@@ -135,22 +131,40 @@ Accuracy under extreme data scarcity (k samples per class):
 ```
 wafer-fault-detection-with-ml/
 │
-├── src/
-│   └── load_data.py                        # Data loading utilities
+├── src/                                    ← shared library (no duplication)
+│   ├── data/
+│   │   ├── loader.py                       # load, clean, split — single source of truth
+│   │   └── augmentation.py                # torchvision transform pipelines
+│   ├── models/
+│   │   ├── cnn.py                          # WaferCNN architecture
+│   │   └── classical.py                   # RF, SVM, LR factories
+│   ├── training/
+│   │   ├── trainer.py                      # training loop + early stopping
+│   │   └── losses.py                       # CE, weighted CE, focal loss
+│   ├── eval/
+│   │   ├── metrics.py                      # accuracy, F1, ROC-AUC, confusion matrix
+│   │   └── plots.py                        # all visualisation helpers
+│   └── utils.py                            # config loader, seed, device
 │
-├── wafer_pipeline.py                       # Classical ML pipeline
-├── wafer_cnn_pipeline.py                   # CNN baseline
-├── wafer_cnn_focal_aug.py                  # CNN focal loss + augmentation
-├── wafer_fewshot_focal_experiment.py       # Few-shot experiments
-├── wafer_full_comparison_experiment.py     # ⭐ Main research experiment
+├── wafer_pipeline.py                       # classical ML entry point
+├── wafer_cnn_pipeline.py                   # CNN entry point (all variants)
+├── wafer_fewshot_focal_experiment.py       # few-shot experiment
+│
+├── tests/
+│   ├── test_loader.py                      # unit tests (no dataset needed)
+│   └── test_metrics.py
 │
 ├── outputs/
-│   ├── figures/                            # Plots, confusion matrices, curves
-│   └── results/                            # CSV result summaries
+│   ├── figures/
+│   ├── results/
+│   └── models/
 │
-├── download_dataset.py
-├── semiconductor-wafer-defect-classification.ipynb
-├── CITATION.cff
+├── config.yaml                             # all hyperparameters here
+├── pyproject.toml                          # ruff + black + pytest config
+├── requirements.txt
+├── requirements-dev.txt
+├── .github/workflows/ci.yml               # lint + test on push/PR
+├── CONTRIBUTING.md
 └── README.md
 ```
 
@@ -160,12 +174,16 @@ wafer-fault-detection-with-ml/
 
 | Tool | Purpose |
 |---|---|
-| Python 3.x | Core language |
-| PyTorch | CNN models & training |
-| Scikit-learn | Classical ML |
+| Python 3.10+ | Core language |
+| PyTorch 2.0+ | CNN models & training |
+| torchvision | Augmentation transforms |
+| Scikit-learn | Classical ML & label encoding |
 | NumPy / Pandas | Data processing |
-| OpenCV | Image preprocessing |
-| Matplotlib | Visualization |
+| OpenCV | Image resizing |
+| Matplotlib / Seaborn | Visualisation |
+| PyYAML | Configuration |
+| pytest | Unit tests |
+| ruff + black | Linting & formatting |
 
 ---
 
@@ -178,7 +196,7 @@ git clone https://github.com/PanagiotaGr/wafer-fault-detection-with-ml.git
 cd wafer-fault-detection-with-ml
 
 python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\activate
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 
 pip install -r requirements.txt
 ```
@@ -186,36 +204,45 @@ pip install -r requirements.txt
 ### Run pipelines
 
 ```bash
-# Classical ML
+# Classical ML (LR + SVM + Random Forest)
 python wafer_pipeline.py
 
-# CNN baseline
+# All CNN variants
 python wafer_cnn_pipeline.py
 
-# CNN with focal loss + augmentation
-python wafer_cnn_focal_aug.py
+# Single CNN variant
+python wafer_cnn_pipeline.py --variant focal_aug
+
+# Few-shot experiment
+python wafer_fewshot_focal_experiment.py
 ```
 
-### Run the main research experiment
+All pipelines read from `config.yaml` — override with `--config my_config.yaml`.
+
+### Run tests
 
 ```bash
-python wafer_full_comparison_experiment.py
+pytest tests/ -v
+pytest tests/ --cov=src --cov-report=term-missing
 ```
 
-### Output files
-
-Results are saved automatically to:
+### Outputs
 
 ```
-outputs/figures/fewshot_accuracy_comparison.png
-outputs/results/fewshot_summary.csv
+outputs/figures/   confusion matrices, training curves, comparison plots
+outputs/results/   per-class CSV, summary JSON, confusion matrix CSV
+outputs/models/    best model checkpoints (.pt)
 ```
 
 ---
 
-## 📖 Citation
+## 🤝 Contributing
 
-If you find this work useful, please cite it:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, code style rules, and how to add new models or loss functions.
+
+---
+
+## 📖 Citation
 
 ```bibtex
 @software{Grosdouli_Wafer_Fault_Detection_2026,
